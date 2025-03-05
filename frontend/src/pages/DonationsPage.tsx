@@ -66,7 +66,7 @@ export default function DonationsPage() {
       currency: donation.currency,
       payment_method: donation.payment_method,
       date: donation.date,
-      Collaborator: donation.Collaborator,
+      collaborator: donation.collaborator,
     })) || [];
 
   return (

@@ -310,7 +310,7 @@ export default function EmailCampaignForm({
               filters: currentFilters,
             });
             setSuccess(
-              `Campaign sent successfully to ${preview.count} recipients`
+              'Campaign sending has started. You can check its status in the campaigns list.'
             );
             setShowConfirmDialog(false);
             setTimeout(() => navigate('/email-campaigns'), 1500);

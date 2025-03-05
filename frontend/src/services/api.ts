@@ -87,7 +87,10 @@ export const emailCampaignAPI = {
 
   send: (id: string, filters?: CampaignFilter) =>
     api
-      .post<{ message: string }>(`/email-campaigns/${id}/send`, { filters })
+      .post<{ message: string; campaignId: string }>(
+        `/email-campaigns/${id}/send`,
+        { filters }
+      )
       .then((res) => res.data)
       .catch(handleApiError),
 
@@ -97,6 +100,12 @@ export const emailCampaignAPI = {
         '/email-campaigns/preview-recipients',
         { filters }
       )
+      .then((res) => res.data)
+      .catch(handleApiError),
+
+  getStatus: (id: string) =>
+    api
+      .get<EmailCampaign>(`/email-campaigns/${id}`)
       .then((res) => res.data)
       .catch(handleApiError),
 };

@@ -43,7 +43,7 @@ export default function DonationForm({
     amount: '',
     currency: 'USD',
     payment_method: '',
-    collaboratorId: '',
+    CollaboratorId: '',
     date: new Date().toISOString().split('T')[0],
   });
 
@@ -53,7 +53,7 @@ export default function DonationForm({
         amount: initialData.amount.toString(),
         currency: initialData.currency,
         payment_method: initialData.payment_method,
-        collaboratorId: initialData.collaboratorId,
+        CollaboratorId: initialData.CollaboratorId,
         date: new Date(initialData.date).toISOString().split('T')[0],
       });
     }
@@ -68,7 +68,7 @@ export default function DonationForm({
         amount: parseFloat(formData.amount),
         currency: formData.currency,
         payment_method: formData.payment_method,
-        collaboratorId: formData.collaboratorId,
+        CollaboratorId: formData.CollaboratorId,
         date: new Date(formData.date).toISOString().split('T')[0], // Ensure consistent date format
       };
 

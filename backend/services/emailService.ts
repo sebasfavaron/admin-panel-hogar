@@ -77,6 +77,8 @@ export const emailService = {
     campaignId: string,
     filters?: FilterOptions
   ): Promise<void> {
+    const transaction = await EmailCampaign.sequelize?.transaction();
+
     try {
       console.log(`Starting bulk email send for campaign ${campaignId}`);
       console.log('SendGrid configuration:', {
@@ -85,9 +87,18 @@ export const emailService = {
         environment: process.env.NODE_ENV,
       });
 
-      const campaign = await EmailCampaign.findByPk(campaignId);
+      // Lock the campaign record to prevent concurrent sends
+      const campaign = await EmailCampaign.findByPk(campaignId, {
+        transaction,
+        lock: true,
+      });
+
       if (!campaign) {
         throw new EmailServiceError('Campaign not found');
+      }
+
+      if (campaign.status === 'sent') {
+        throw new EmailServiceError('Campaign has already been sent');
       }
 
       const recipients = await this.getFilteredCollaborators(filters || {});
@@ -96,31 +107,37 @@ export const emailService = {
       }
 
       console.log(`Found ${recipients.length} recipients matching filters`);
-      console.log('Campaign details:', {
-        id: campaign.id,
-        subject: campaign.subject,
-        bodyLength: campaign.body?.length,
-        status: campaign.status,
-      });
+
+      // Update campaign status and recipients in a single transaction
+      await Promise.all([
+        campaign.setRecipients(recipients, {
+          transaction,
+          hooks: false, // Prevent recipient count hook
+        }),
+        campaign.update(
+          {
+            status: 'sent',
+            sent_at: new Date(),
+            recipient_count: recipients.length,
+          },
+          {
+            transaction,
+            hooks: false, // Prevent unnecessary hooks
+          }
+        ),
+      ]);
 
       // For development, skip actual sending but show what would be sent
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Development mode - simulating email send');
-        console.log(
-          'Would send to:',
-          recipients.map((r) => ({ email: r.email, name: r.name }))
-        );
+      // if (process.env.NODE_ENV === 'development') {
+      //   console.log('Development mode - simulating email send');
+      //   console.log(
+      //     'Would send to:',
+      //     recipients.map((r) => ({ email: r.email, name: r.name }))
+      //   );
 
-        await campaign.update({
-          status: 'sent',
-          sent_at: new Date(),
-          recipient_count: recipients.length,
-        });
-
-        await campaign.setRecipients(recipients);
-        console.log('Campaign marked as sent in development mode');
-        return;
-      }
+      //   await transaction.commit();
+      //   return;
+      // }
 
       // Send emails in batches
       const batchSize = 500; // SendGrid recommendation
@@ -143,6 +160,9 @@ export const emailService = {
                 `Processing batch ${batchNumber}/${totalBatches} (${batch.length} recipients)`
               );
 
+              if (!SENDGRID_FROM_EMAIL) {
+                throw new Error('SENDGRID_FROM_EMAIL is not configured');
+              }
               const emailData = {
                 to: batch.map((r) => ({ email: r.email, name: r.name })),
                 from: { email: SENDGRID_FROM_EMAIL, name: 'Orphanage Admin' },
@@ -172,27 +192,24 @@ export const emailService = {
         );
       }
 
-      console.log('Waiting for all batches to complete...');
+      // Wait for all email batches to complete before marking as sent
       await Promise.all(batches);
       console.log('All batches sent successfully');
 
-      // Update campaign status and recipient count
-      await campaign.update({
-        status: 'sent',
-        sent_at: new Date(),
-        recipient_count: recipients.length,
-      });
-
-      await campaign.setRecipients(recipients);
+      // Commit the transaction after successful send
+      await transaction.commit();
       console.log(
         `Campaign ${campaignId} completed successfully with ${recipients.length} recipients`
       );
     } catch (error: any) {
+      if (transaction) await transaction.rollback();
+
       console.error('Failed to send bulk email:', {
         error: error.message,
         response: error.response?.body,
         stack: error.stack,
       });
+
       throw new EmailServiceError(
         error instanceof EmailServiceError
           ? error.message

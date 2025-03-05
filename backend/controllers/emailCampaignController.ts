@@ -76,10 +76,10 @@ export const deleteEmailCampaign = async (req: Request, res: Response) => {
 };
 
 export const sendCampaign = async (req: Request, res: Response) => {
-  try {
-    const { filters } = req.body;
-    const campaign = await EmailCampaign.findByPk(req.params.id);
+  const { filters } = req.body;
 
+  try {
+    const campaign = await EmailCampaign.findByPk(req.params.id);
     if (!campaign) {
       return res.status(404).json({ error: 'Campaign not found' });
     }
@@ -88,23 +88,23 @@ export const sendCampaign = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Campaign has already been sent' });
     }
 
-    await emailService.sendBulkEmail(req.params.id, filters);
-
-    // Fetch updated campaign data
-    const updatedCampaign = await EmailCampaign.findByPk(req.params.id, {
-      include: ['recipients'],
+    // Start sending process but don't wait for it
+    emailService.sendBulkEmail(req.params.id, filters).catch((error) => {
+      console.error('Background send failed:', error);
     });
 
+    // Return success immediately
     res.json({
-      message: 'Campaign sent successfully',
-      campaign: updatedCampaign,
-      recipientCount: updatedCampaign?.recipient_count || 0,
+      message: 'Campaign sending started',
+      campaignId: req.params.id,
     });
   } catch (error) {
-    console.error('Error in sendCampaign:', error);
+    console.error('Error initiating campaign send:', error);
     res.status(400).json({
-      error: error instanceof Error ? error.message : 'Error sending campaign',
-      details: error instanceof Error ? error.stack : undefined,
+      error:
+        error instanceof Error
+          ? error.message
+          : 'Error initiating campaign send',
     });
   }
 };

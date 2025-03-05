@@ -1,6 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
 import sequelize from '../config/database';
-import { Collaborator } from './Collaborator';
+import Collaborator from './Collaborator';
 
 interface EmailCampaignAttributes {
   id: string;
@@ -37,20 +37,6 @@ class EmailCampaign
   public removeRecipient!: Function;
   public removeRecipients!: Function;
   public countRecipients!: Function;
-
-  // Custom method to safely update recipient count
-  public async updateRecipientCount(): Promise<void> {
-    try {
-      const count = await this.countRecipients();
-      await this.update({ recipient_count: count });
-      console.log(
-        `Updated recipient count for campaign ${this.id} to ${count}`
-      );
-    } catch (error) {
-      console.error('Failed to update recipient count:', error);
-      // Don't throw, as this is a non-critical operation
-    }
-  }
 }
 
 EmailCampaign.init(
@@ -95,17 +81,43 @@ EmailCampaign.init(
     sequelize,
     modelName: 'EmailCampaign',
     timestamps: true,
-    hooks: {
-      // Automatically update recipient count when recipients are modified
-      afterSave: async (instance: EmailCampaign) => {
-        await instance.updateRecipientCount();
-      },
-      afterBulkCreate: async (instances: EmailCampaign[]) => {
-        for (const instance of instances) {
-          await instance.updateRecipientCount();
+  }
+);
+
+// Add hooks after initialization
+EmailCampaign.afterCreate(async (instance: EmailCampaign) => {
+  try {
+    const count = await instance.countRecipients();
+    if (instance.recipient_count !== count) {
+      await instance.update(
+        { recipient_count: count },
+        {
+          hooks: false,
         }
-      },
-    },
+      );
+    }
+  } catch (error) {
+    console.error('Failed to update recipient count:', error);
+  }
+});
+
+EmailCampaign.afterBulkCreate(
+  async (instances: readonly EmailCampaign[], options: any) => {
+    try {
+      for (const instance of instances) {
+        const count = await instance.countRecipients();
+        if (instance.recipient_count !== count) {
+          await instance.update(
+            { recipient_count: count },
+            {
+              hooks: false,
+            }
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Failed to update recipient count for bulk create:', error);
+    }
   }
 );
 

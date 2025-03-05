@@ -11,14 +11,10 @@ export function setupAssociations() {
   EmailCampaign.belongsToMany(Collaborator, {
     through: 'CampaignRecipients',
     as: 'recipients',
-    foreignKey: 'EmailCampaignId',
-    otherKey: 'CollaboratorId',
   });
 
   Collaborator.belongsToMany(EmailCampaign, {
     through: 'CampaignRecipients',
-    as: 'campaigns',
-    foreignKey: 'CollaboratorId',
-    otherKey: 'EmailCampaignId',
+    as: 'receivedCampaigns',
   });
 }
