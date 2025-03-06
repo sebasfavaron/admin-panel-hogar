@@ -65,7 +65,7 @@ export default function DonationsPage() {
       }).format(donation.amount),
       currency: donation.currency,
       payment_method: donation.payment_method,
-      date: donation.date,
+      date: donation.date.toISOString().split('T')[0],
       collaborator: donation.collaborator,
     })) || [];
 

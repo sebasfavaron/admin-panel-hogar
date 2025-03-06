@@ -12,41 +12,36 @@ export interface Collaborator {
   id: string;
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
   help_type: HelpType;
-  last_contact: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-  };
-  createdAt: string;
-  updatedAt: string;
+  last_contact?: Date;
+  address?: Address;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface Donation {
   id: string;
   amount: number;
   currency: string;
-  date: string;
+  date: Date;
   payment_method: string;
   CollaboratorId: string;
   collaborator?: Collaborator;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface EmailCampaign {
   id: string;
   subject: string;
   body: string;
-  sent_at?: string;
+  sent_at?: Date;
   status: 'draft' | 'sent';
   recipient_count: number;
   recipients?: Collaborator[];
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface CampaignFilter {

@@ -57,7 +57,7 @@ export default function EmailCampaignsPage() {
             params.row.status.charAt(0).toUpperCase() +
             params.row.status.slice(1)
           }
-          color={getStatusColor(params.row.status) as any}
+          color={getStatusColor(params.row.status)}
           size='small'
         />
       ),
@@ -81,7 +81,12 @@ export default function EmailCampaignsPage() {
       field: 'createdAt',
       headerName: 'Created',
       width: 180,
-      renderCell: (params) => new Date(params.row.createdAt).toLocaleString(),
+      renderCell: (params) => {
+        const date = params.row.createdAt
+          ? new Date(params.row.createdAt)
+          : null;
+        return date ? date.toLocaleString() : '-';
+      },
     },
     {
       field: 'actions',

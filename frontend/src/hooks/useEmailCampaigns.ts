@@ -11,8 +11,8 @@ export const useEmailCampaigns = () => {
 
 export const useEmailCampaign = (id: string | undefined) => {
   return useQuery({
-    queryKey: ['emailCampaigns', id],
-    queryFn: () => emailCampaignAPI.getById(id),
+    queryKey: ['emailCampaign', id],
+    queryFn: () => (id ? emailCampaignAPI.getById(id) : null),
     enabled: !!id,
   });
 };

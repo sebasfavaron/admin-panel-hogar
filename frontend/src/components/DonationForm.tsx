@@ -44,7 +44,7 @@ export default function DonationForm({
     currency: 'USD',
     payment_method: '',
     CollaboratorId: '',
-    date: new Date().toISOString().split('T')[0],
+    date: new Date(),
   });
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function DonationForm({
         currency: initialData.currency,
         payment_method: initialData.payment_method,
         CollaboratorId: initialData.CollaboratorId,
-        date: new Date(initialData.date).toISOString().split('T')[0],
+        date: initialData.date,
       });
     }
   }, [initialData]);
@@ -69,7 +69,7 @@ export default function DonationForm({
         currency: formData.currency,
         payment_method: formData.payment_method,
         CollaboratorId: formData.CollaboratorId,
-        date: new Date(formData.date).toISOString().split('T')[0], // Ensure consistent date format
+        date: formData.date,
       };
 
       if (initialData?.id) {
@@ -165,8 +165,8 @@ export default function DonationForm({
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel>Collaborator</InputLabel>
         <Select
-          name='collaboratorId'
-          value={formData.collaboratorId}
+          name='CollaboratorId'
+          value={formData.CollaboratorId}
           label='Collaborator'
           onChange={handleSelectChange}
           required

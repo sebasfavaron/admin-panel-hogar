@@ -34,19 +34,22 @@ export default function CollaboratorForm({
   const updateCollaborator = useUpdateCollaborator();
   const [error, setError] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    help_type: 'financial' as (typeof HELP_TYPES)[number],
+  const initialValues = {
+    name: initialData?.name || '',
+    email: initialData?.email || '',
+    phone: initialData?.phone || '',
+    help_type: initialData?.help_type || HELP_TYPES[0],
+    last_contact: initialData?.last_contact || new Date(),
     address: {
-      street: '',
-      city: '',
-      state: '',
-      country: '',
-      zipCode: '',
+      street: initialData?.address?.street || '',
+      city: initialData?.address?.city || '',
+      state: initialData?.address?.state || '',
+      country: initialData?.address?.country || '',
+      zipCode: initialData?.address?.zipCode || '',
     },
-  });
+  };
+
+  const [formData, setFormData] = useState(initialValues);
 
   useEffect(() => {
     if (initialData) {
@@ -55,6 +58,7 @@ export default function CollaboratorForm({
         email: initialData.email,
         phone: initialData.phone || '',
         help_type: initialData.help_type,
+        last_contact: initialData.last_contact || new Date(),
         address: {
           street: initialData.address?.street || '',
           city: initialData.address?.city || '',
