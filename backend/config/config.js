@@ -2,13 +2,11 @@ require('dotenv').config();
 
 module.exports = {
   development: {
-    url: process.env.DATABASE_URL || 'postgres://localhost:5432/orphanage-db',
+    url: process.env.DATABASE_URL,
     dialect: 'postgres',
-  },
-  test: {
-    url:
-      process.env.DATABASE_URL || 'postgres://localhost:5432/orphanage-db-test',
-    dialect: 'postgres',
+    dialectOptions: {
+      ssl: false,
+    },
   },
   production: {
     url: process.env.DATABASE_URL,
