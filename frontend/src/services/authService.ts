@@ -21,6 +21,16 @@ export interface AuthResponse {
   };
 }
 
+export interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  lastLogin?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const authService = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
     const response = await api.post('/auth/login', credentials);
@@ -32,7 +42,7 @@ const authService = {
     return response.data;
   },
 
-  getProfile: async (): Promise<any> => {
+  getProfile: async (): Promise<UserProfile> => {
     const response = await api.get('/auth/profile');
     return response.data;
   },

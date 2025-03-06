@@ -10,7 +10,7 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 export default function RegisterPage() {
   const { register, error, isLoading } = useAuth();
@@ -42,7 +42,7 @@ export default function RegisterPage() {
 
     try {
       await register({ name, email, password });
-    } catch (err) {
+    } catch {
       // Auth context will handle the error
     }
   };

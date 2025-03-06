@@ -5,6 +5,7 @@ import { auth } from '../middleware/auth';
 
 const router = Router();
 
+// Fix type errors by using the correct return type for the handler functions
 router.post('/login', validateLogin, login);
 router.post('/register', validateRegister, register);
 router.get('/profile', auth, getProfile);

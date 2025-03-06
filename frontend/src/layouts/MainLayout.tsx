@@ -21,7 +21,7 @@ import {
 } from '@mui/icons-material';
 import { Link, Outlet } from 'react-router-dom';
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const DRAWER_WIDTH = 240;
 

@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import Collaborator from '../models/Collaborator';
 
-export const getCollaborators = async (req: Request, res: Response) => {
+export const getCollaborators = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     console.log('Attempting to fetch collaborators...');
     const collaborators = await Collaborator.findAll().catch((err) => {
@@ -25,11 +28,15 @@ export const getCollaborators = async (req: Request, res: Response) => {
   }
 };
 
-export const getCollaborator = async (req: Request, res: Response) => {
+export const getCollaborator = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const collaborator = await Collaborator.findByPk(req.params.id);
     if (!collaborator) {
-      return res.status(404).json({ error: 'Collaborator not found' });
+      res.status(404).json({ error: 'Collaborator not found' });
+      return;
     }
     res.json(collaborator);
   } catch (error) {
@@ -37,7 +44,10 @@ export const getCollaborator = async (req: Request, res: Response) => {
   }
 };
 
-export const createCollaborator = async (req: Request, res: Response) => {
+export const createCollaborator = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const collaborator = await Collaborator.create(req.body);
     res.status(201).json(collaborator);
@@ -46,11 +56,15 @@ export const createCollaborator = async (req: Request, res: Response) => {
   }
 };
 
-export const updateCollaborator = async (req: Request, res: Response) => {
+export const updateCollaborator = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const collaborator = await Collaborator.findByPk(req.params.id);
     if (!collaborator) {
-      return res.status(404).json({ error: 'Collaborator not found' });
+      res.status(404).json({ error: 'Collaborator not found' });
+      return;
     }
     await collaborator.update(req.body);
     res.json(collaborator);
@@ -59,11 +73,15 @@ export const updateCollaborator = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteCollaborator = async (req: Request, res: Response) => {
+export const deleteCollaborator = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const collaborator = await Collaborator.findByPk(req.params.id);
     if (!collaborator) {
-      return res.status(404).json({ error: 'Collaborator not found' });
+      res.status(404).json({ error: 'Collaborator not found' });
+      return;
     }
     await collaborator.destroy();
     res.status(204).send();

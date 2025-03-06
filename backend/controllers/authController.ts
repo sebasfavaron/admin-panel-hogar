@@ -1,19 +1,21 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import User from '../models/User';
 import { v4 as uuidv4 } from 'uuid';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const JWT_EXPIRY = process.env.JWT_EXPIRY || '15m';
 
-export const register = async (req: Request, res: Response) => {
+// Update return types to Promise<void> to fix Express router compatibility
+export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password, name } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ error: 'Email already registered' });
+      res.status(400).json({ error: 'Email already registered' });
+      return;
     }
 
     // Create user with UUID
@@ -28,7 +30,7 @@ export const register = async (req: Request, res: Response) => {
     // Generate token
     const token = jwt.sign({ id: user.id }, JWT_SECRET, {
       expiresIn: JWT_EXPIRY,
-    });
+    } as SignOptions);
 
     // Update last login
     await user.update({ lastLogin: new Date() });
@@ -49,26 +51,28 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
     // Find user
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      res.status(401).json({ error: 'Invalid credentials' });
+      return;
     }
 
     // Verify password
     const isValidPassword = await user.comparePassword(password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      res.status(401).json({ error: 'Invalid credentials' });
+      return;
     }
 
     // Generate token
     const token = jwt.sign({ id: user.id }, JWT_SECRET, {
       expiresIn: JWT_EXPIRY,
-    });
+    } as SignOptions);
 
     // Update last login
     await user.update({ lastLogin: new Date() });
@@ -89,7 +93,10 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const getProfile = async (req: Request, res: Response) => {
+export const getProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     // req.user is set by auth middleware
     const user = await User.findByPk(req.user!.id, {
@@ -97,7 +104,8 @@ export const getProfile = async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      res.status(404).json({ error: 'User not found' });
+      return;
     }
 
     res.json(user);

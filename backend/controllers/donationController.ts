@@ -2,7 +2,10 @@ import { Request, Response } from 'express';
 import Donation from '../models/Donation';
 import Collaborator from '../models/Collaborator';
 
-export const getDonations = async (req: Request, res: Response) => {
+export const getDonations = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const donations = await Donation.findAll({
       include: [
@@ -20,7 +23,10 @@ export const getDonations = async (req: Request, res: Response) => {
   }
 };
 
-export const getDonation = async (req: Request, res: Response) => {
+export const getDonation = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const donation = await Donation.findByPk(req.params.id, {
       include: [
@@ -31,7 +37,8 @@ export const getDonation = async (req: Request, res: Response) => {
       ],
     });
     if (!donation) {
-      return res.status(404).json({ error: 'Donation not found' });
+      res.status(404).json({ error: 'Donation not found' });
+      return;
     }
     res.json(donation);
   } catch (error) {
@@ -39,7 +46,10 @@ export const getDonation = async (req: Request, res: Response) => {
   }
 };
 
-export const createDonation = async (req: Request, res: Response) => {
+export const createDonation = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const donationData = {
       ...req.body,
@@ -62,11 +72,15 @@ export const createDonation = async (req: Request, res: Response) => {
   }
 };
 
-export const updateDonation = async (req: Request, res: Response) => {
+export const updateDonation = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const donation = await Donation.findByPk(req.params.id);
     if (!donation) {
-      return res.status(404).json({ error: 'Donation not found' });
+      res.status(404).json({ error: 'Donation not found' });
+      return;
     }
     const updateData = {
       ...req.body,
@@ -89,11 +103,15 @@ export const updateDonation = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteDonation = async (req: Request, res: Response) => {
+export const deleteDonation = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const donation = await Donation.findByPk(req.params.id);
     if (!donation) {
-      return res.status(404).json({ error: 'Donation not found' });
+      res.status(404).json({ error: 'Donation not found' });
+      return;
     }
     await donation.destroy();
     res.status(204).send();
@@ -105,7 +123,7 @@ export const deleteDonation = async (req: Request, res: Response) => {
 export const getDonationsByCollaborator = async (
   req: Request,
   res: Response
-) => {
+): Promise<void> => {
   try {
     const donations = await Donation.findAll({
       where: { CollaboratorId: req.params.collaboratorId },

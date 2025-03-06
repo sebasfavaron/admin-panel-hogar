@@ -2,7 +2,10 @@ import { Request, Response } from 'express';
 import EmailCampaign from '../models/EmailCampaign';
 import { emailService } from '../services/emailService';
 
-export const getEmailCampaigns = async (req: Request, res: Response) => {
+export const getEmailCampaigns = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const campaigns = await EmailCampaign.findAll({
       order: [['createdAt', 'DESC']],
@@ -13,13 +16,17 @@ export const getEmailCampaigns = async (req: Request, res: Response) => {
   }
 };
 
-export const getEmailCampaign = async (req: Request, res: Response) => {
+export const getEmailCampaign = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const campaign = await EmailCampaign.findByPk(req.params.id, {
       include: ['recipients'],
     });
     if (!campaign) {
-      return res.status(404).json({ error: 'Campaign not found' });
+      res.status(404).json({ error: 'Campaign not found' });
+      return;
     }
     res.json(campaign);
   } catch (error) {
@@ -27,7 +34,10 @@ export const getEmailCampaign = async (req: Request, res: Response) => {
   }
 };
 
-export const createEmailCampaign = async (req: Request, res: Response) => {
+export const createEmailCampaign = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const campaign = await EmailCampaign.create({
       ...req.body,
@@ -39,15 +49,20 @@ export const createEmailCampaign = async (req: Request, res: Response) => {
   }
 };
 
-export const updateEmailCampaign = async (req: Request, res: Response) => {
+export const updateEmailCampaign = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const campaign = await EmailCampaign.findByPk(req.params.id);
     if (!campaign) {
-      return res.status(404).json({ error: 'Campaign not found' });
+      res.status(404).json({ error: 'Campaign not found' });
+      return;
     }
 
     if (campaign.status === 'sent') {
-      return res.status(400).json({ error: 'Cannot update a sent campaign' });
+      res.status(400).json({ error: 'Cannot update a sent campaign' });
+      return;
     }
 
     await campaign.update(req.body);
@@ -57,15 +72,20 @@ export const updateEmailCampaign = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteEmailCampaign = async (req: Request, res: Response) => {
+export const deleteEmailCampaign = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const campaign = await EmailCampaign.findByPk(req.params.id);
     if (!campaign) {
-      return res.status(404).json({ error: 'Campaign not found' });
+      res.status(404).json({ error: 'Campaign not found' });
+      return;
     }
 
     if (campaign.status === 'sent') {
-      return res.status(400).json({ error: 'Cannot delete a sent campaign' });
+      res.status(400).json({ error: 'Cannot delete a sent campaign' });
+      return;
     }
 
     await campaign.destroy();
@@ -75,17 +95,22 @@ export const deleteEmailCampaign = async (req: Request, res: Response) => {
   }
 };
 
-export const sendCampaign = async (req: Request, res: Response) => {
+export const sendCampaign = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const { filters } = req.body;
 
   try {
     const campaign = await EmailCampaign.findByPk(req.params.id);
     if (!campaign) {
-      return res.status(404).json({ error: 'Campaign not found' });
+      res.status(404).json({ error: 'Campaign not found' });
+      return;
     }
 
     if (campaign.status === 'sent') {
-      return res.status(400).json({ error: 'Campaign has already been sent' });
+      res.status(400).json({ error: 'Campaign has already been sent' });
+      return;
     }
 
     // Start sending process but don't wait for it
@@ -109,7 +134,10 @@ export const sendCampaign = async (req: Request, res: Response) => {
   }
 };
 
-export const previewRecipients = async (req: Request, res: Response) => {
+export const previewRecipients = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { filters } = req.body;
     const recipients = await emailService.getFilteredCollaborators(filters);
