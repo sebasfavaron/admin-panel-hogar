@@ -32,6 +32,12 @@ const testConnection = async () => {
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
 
+    // Sync models in development mode
+    if (process.env.NODE_ENV !== 'production') {
+      await sequelize.sync({ alter: true });
+      console.log('Database models synchronized.');
+    }
+
     // Test query to ensure we can actually query the database
     await sequelize.query('SELECT 1+1 AS result');
     console.log('Database query test successful.');
