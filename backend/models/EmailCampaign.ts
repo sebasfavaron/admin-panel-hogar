@@ -1,42 +1,63 @@
-import { Model, DataTypes } from 'sequelize';
+import {
+  Model,
+  DataTypes,
+  Optional,
+  BelongsToManyGetAssociationsMixin,
+} from 'sequelize';
 import sequelize from '../config/database';
 import Collaborator from './Collaborator';
 
-interface EmailCampaignAttributes {
+export type EmailCampaignStatus = 'draft' | 'sent';
+
+// Define attributes interface
+export interface EmailCampaignAttributes {
   id: string;
   subject: string;
   body: string;
   sent_at?: Date;
-  status: 'draft' | 'sent';
+  status: EmailCampaignStatus;
   recipient_count: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
+// Define creation attributes interface (optional fields during creation)
+export interface EmailCampaignCreationAttributes
+  extends Optional<
+    EmailCampaignAttributes,
+    'id' | 'sent_at' | 'status' | 'recipient_count' | 'createdAt' | 'updatedAt'
+  > {}
+
+// Define the EmailCampaign class
 class EmailCampaign
-  extends Model<EmailCampaignAttributes>
+  extends Model<EmailCampaignAttributes, EmailCampaignCreationAttributes>
   implements EmailCampaignAttributes
 {
   public id!: string;
   public subject!: string;
   public body!: string;
   public sent_at?: Date;
-  public status!: 'draft' | 'sent';
+  public status!: EmailCampaignStatus;
   public recipient_count!: number;
 
   // Timestamps
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 
-  // Association
+  // Association methods
+  public getRecipients!: BelongsToManyGetAssociationsMixin<Collaborator>;
+  public setRecipients!: (
+    recipients: Collaborator[],
+    options?: any
+  ) => Promise<any>;
+
+  // Define recipients association property
   public readonly recipients?: Collaborator[];
 
-  // Association methods that Sequelize will add
-  public addRecipient!: Function;
-  public addRecipients!: (recipients: Collaborator[]) => Promise<void>;
-  public getRecipients!: Function;
-  public setRecipients!: Function;
-  public removeRecipient!: Function;
-  public removeRecipients!: Function;
-  public countRecipients!: Function;
+  // Association method
+  public static associate(models: any): void {
+    // Will be defined in associations.ts
+  }
 }
 
 EmailCampaign.init(
@@ -49,20 +70,14 @@ EmailCampaign.init(
     subject: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-        len: [1, 200],
-      },
     },
     body: {
       type: DataTypes.TEXT,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
     sent_at: {
       type: DataTypes.DATE,
+      allowNull: true,
     },
     status: {
       type: DataTypes.ENUM('draft', 'sent'),
@@ -72,52 +87,44 @@ EmailCampaign.init(
     recipient_count: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
-      validate: {
-        min: 0,
-      },
     },
   },
   {
     sequelize,
     modelName: 'EmailCampaign',
-    timestamps: true,
-  }
-);
-
-// Add hooks after initialization
-EmailCampaign.afterCreate(async (instance: EmailCampaign) => {
-  try {
-    const count = await instance.countRecipients();
-    if (instance.recipient_count !== count) {
-      await instance.update(
-        { recipient_count: count },
-        {
-          hooks: false,
+    tableName: 'EmailCampaigns',
+    hooks: {
+      afterCreate: async (campaign: EmailCampaign, options) => {
+        try {
+          // Update the recipient_count when specific associations exist
+          if (options && options.include && options.include.length) {
+            await campaign.update(
+              { recipient_count: (campaign as any).recipients?.length || 0 },
+              { transaction: options.transaction }
+            );
+          }
+        } catch (error) {
+          console.error('Error in afterCreate hook:', error);
         }
-      );
-    }
-  } catch (error) {
-    console.error('Failed to update recipient count:', error);
-  }
-});
-
-EmailCampaign.afterBulkCreate(
-  async (instances: readonly EmailCampaign[], options: any) => {
-    try {
-      for (const instance of instances) {
-        const count = await instance.countRecipients();
-        if (instance.recipient_count !== count) {
-          await instance.update(
-            { recipient_count: count },
-            {
-              hooks: false,
+      },
+      afterBulkCreate: async (campaigns: EmailCampaign[], options) => {
+        try {
+          // Process campaigns with recipients
+          for (const campaign of campaigns) {
+            if ((campaign as any).recipients?.length) {
+              await campaign.update(
+                {
+                  recipient_count: (campaign as any).recipients.length,
+                },
+                { transaction: options.transaction }
+              );
             }
-          );
+          }
+        } catch (error) {
+          console.error('Error in afterBulkCreate hook:', error);
         }
-      }
-    } catch (error) {
-      console.error('Failed to update recipient count for bulk create:', error);
-    }
+      },
+    },
   }
 );
 

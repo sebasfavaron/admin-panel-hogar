@@ -1,18 +1,26 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
-interface CollaboratorAttributes {
+// Define attributes interface
+export interface CollaboratorAttributes {
   id: string;
   name: string;
   email: string;
   phone?: string;
   help_type: 'financial' | 'physical' | 'both';
   last_contact?: Date;
-  address?: object;
+  address?: Record<string, any>;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
+// Define creation attributes interface (optional fields during creation)
+export interface CollaboratorCreationAttributes
+  extends Optional<CollaboratorAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+
+// Define the Collaborator class
 class Collaborator
-  extends Model<CollaboratorAttributes>
+  extends Model<CollaboratorAttributes, CollaboratorCreationAttributes>
   implements CollaboratorAttributes
 {
   public id!: string;
@@ -21,7 +29,16 @@ class Collaborator
   public phone!: string;
   public help_type!: 'financial' | 'physical' | 'both';
   public last_contact!: Date;
-  public address!: object;
+  public address!: Record<string, any>;
+
+  // Timestamps
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+
+  // Associations
+  public static associate(models: any): void {
+    // Will be defined in associations.ts
+  }
 }
 
 Collaborator.init(
@@ -37,11 +54,12 @@ Collaborator.init(
     },
     email: {
       type: DataTypes.STRING,
-      unique: true,
       allowNull: false,
+      unique: true,
     },
     phone: {
       type: DataTypes.STRING,
+      allowNull: true,
     },
     help_type: {
       type: DataTypes.ENUM('financial', 'physical', 'both'),
@@ -49,15 +67,17 @@ Collaborator.init(
     },
     last_contact: {
       type: DataTypes.DATE,
+      allowNull: true,
     },
     address: {
       type: DataTypes.JSONB,
+      allowNull: true,
     },
   },
   {
     sequelize,
     modelName: 'Collaborator',
-    timestamps: true,
+    tableName: 'Collaborators',
   }
 );
 

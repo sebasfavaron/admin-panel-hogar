@@ -1,22 +1,42 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import sequelize from '../config/database';
 
-interface DonationAttributes {
+// Define attributes interface
+export interface DonationAttributes {
   id: string;
   amount: number;
   currency: string;
   date: Date;
   payment_method: string;
-  CollaboratorId: string; // Updated to match Sequelize's convention
+  CollaboratorId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-class Donation extends Model<DonationAttributes> implements DonationAttributes {
+// Define creation attributes interface (optional fields during creation)
+export interface DonationCreationAttributes
+  extends Optional<DonationAttributes, 'id' | 'createdAt' | 'updatedAt'> {}
+
+// Define the Donation class
+class Donation
+  extends Model<DonationAttributes, DonationCreationAttributes>
+  implements DonationAttributes
+{
   public id!: string;
   public amount!: number;
   public currency!: string;
   public date!: Date;
   public payment_method!: string;
-  public CollaboratorId!: string; // Updated to match Sequelize's convention
+  public CollaboratorId!: string;
+
+  // Timestamps
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+
+  // Associations
+  public static associate(models: any): void {
+    // Will be defined in associations.ts
+  }
 }
 
 Donation.init(
@@ -32,27 +52,29 @@ Donation.init(
     },
     currency: {
       type: DataTypes.STRING(3),
-      allowNull: false,
       defaultValue: 'USD',
     },
     date: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: false,
     },
     payment_method: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
     CollaboratorId: {
-      // Updated to match Sequelize's convention
       type: DataTypes.UUID,
-      allowNull: false,
+      references: {
+        model: 'Collaborators',
+        key: 'id',
+      },
+      onUpdate: 'CASCADE',
+      onDelete: 'SET NULL',
     },
   },
   {
     sequelize,
     modelName: 'Donation',
-    timestamps: true,
+    tableName: 'Donations',
   }
 );
 
