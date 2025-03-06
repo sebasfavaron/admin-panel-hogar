@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import sequelize from '../config/database';
 import { setupAssociations } from '../models/associations';
+import { auth, requireRole } from '../middleware/auth';
+import authRoutes from '../routes/authRoutes';
 import collaboratorRoutes from '../routes/collaboratorRoutes';
 import donationRoutes from '../routes/donationRoutes';
 import emailCampaignRoutes from '../routes/emailCampaignRoutes';
@@ -16,10 +18,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use('/api/collaborators', collaboratorRoutes);
-app.use('/api/donations', donationRoutes);
-app.use('/api/email-campaigns', emailCampaignRoutes);
+// Public routes
+app.use('/api/auth', authRoutes);
 
 // Health check endpoint with DB check
 app.get('/health', async (req, res) => {
@@ -31,12 +31,27 @@ app.get('/health', async (req, res) => {
   }
 });
 
+// Protected routes requiring authentication
+app.use(
+  '/api/collaborators',
+  auth,
+  requireRole(['admin', 'user']),
+  collaboratorRoutes
+);
+app.use('/api/donations', auth, requireRole(['admin', 'user']), donationRoutes);
+app.use(
+  '/api/email-campaigns',
+  auth,
+  requireRole(['admin']),
+  emailCampaignRoutes
+);
+
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('Unhandled error:', err);
-  res.status(500).json({ 
+  res.status(500).json({
     error: 'Internal server error',
-    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined,
   });
 });
 
@@ -45,10 +60,10 @@ async function initializeDatabase() {
   try {
     await sequelize.authenticate();
     console.log('Database connection has been established successfully.');
-    
+
     // Initialize model associations
     setupAssociations();
-    
+
     // Sync models with database (only in development)
     if (process.env.NODE_ENV === 'development') {
       await sequelize.sync({ alter: true });

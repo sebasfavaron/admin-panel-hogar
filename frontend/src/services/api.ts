@@ -12,6 +12,34 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
+// Add a request interceptor to include the token in requests
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Add a response interceptor to handle auth errors
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (error.response?.status === 401) {
+      // If unauthorized, clear local storage and redirect to login
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 interface ApiErrorResponse {
   error: string;
   details?: string;
@@ -109,3 +137,5 @@ export const emailCampaignAPI = {
       .then((res) => res.data)
       .catch(handleApiError),
 };
+
+export default api;
