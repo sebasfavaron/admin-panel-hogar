@@ -97,7 +97,11 @@ EmailCampaign.init(
       afterCreate: async (campaign: EmailCampaign, options) => {
         try {
           // Update the recipient_count when specific associations exist
-          if (options && options.include && options.include.length) {
+          if (
+            options?.include &&
+            Array.isArray(options.include) &&
+            options.include.length
+          ) {
             await campaign.update(
               { recipient_count: (campaign as any).recipients?.length || 0 },
               { transaction: options.transaction }
