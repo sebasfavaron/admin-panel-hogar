@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
+import { DataTypes, QueryInterface, Sequelize } from 'sequelize';
 
 module.exports = {
-  async up(queryInterface) {
+  async up(queryInterface: QueryInterface, sequelize: Sequelize) {
     // Create Collaborators table
     await queryInterface.createTable('Collaborators', {
       id: {
@@ -149,7 +149,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface) {
+  async down(queryInterface: QueryInterface, sequelize: Sequelize) {
     await queryInterface.dropTable('CampaignRecipients');
     await queryInterface.dropTable('Donations');
     await queryInterface.dropTable('EmailCampaigns');

@@ -87,6 +87,11 @@ export const emailService = {
         environment: process.env.NODE_ENV,
       });
 
+      // Make sure we have a transaction
+      if (!transaction) {
+        throw new EmailServiceError('Failed to create database transaction');
+      }
+
       // Lock the campaign record to prevent concurrent sends
       const campaign = await EmailCampaign.findByPk(campaignId, {
         transaction,
@@ -126,18 +131,6 @@ export const emailService = {
           }
         ),
       ]);
-
-      // For development, skip actual sending but show what would be sent
-      // if (process.env.NODE_ENV === 'development') {
-      //   console.log('Development mode - simulating email send');
-      //   console.log(
-      //     'Would send to:',
-      //     recipients.map((r) => ({ email: r.email, name: r.name }))
-      //   );
-
-      //   await transaction.commit();
-      //   return;
-      // }
 
       // Send emails in batches
       const batchSize = 500; // SendGrid recommendation
@@ -202,6 +195,7 @@ export const emailService = {
         `Campaign ${campaignId} completed successfully with ${recipients.length} recipients`
       );
     } catch (error: any) {
+      // Safely rollback the transaction if it exists
       if (transaction) await transaction.rollback();
 
       console.error('Failed to send bulk email:', {
