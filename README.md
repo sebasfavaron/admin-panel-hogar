@@ -146,7 +146,6 @@ The project is currently in active development with core features implemented:
 1. **Authentication & Authorization**
 
    - Implement JWT-based authentication
-   - Role-based access control
    - Admin user management
 
 2. **Technical Improvements**
