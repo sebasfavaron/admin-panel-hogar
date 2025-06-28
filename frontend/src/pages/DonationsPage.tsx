@@ -26,7 +26,6 @@ const columns: GridColDef<DonationRow>[] = [
     headerName: 'Fecha',
     flex: 1,
     type: 'date',
-    valueGetter: ({ value }) => value && new Date(value),
   },
   {
     field: 'collaborator',
@@ -67,8 +66,8 @@ export default function DonationsPage() {
       }).format(donation.amount),
       currency: donation.currency,
       payment_method: donation.payment_method,
-      date: new Date(donation.date).toISOString().split('T')[0],
-      collaborator: donation.collaborator,
+      date: new Date(donation.date),
+      Collaborator: donation.collaborator,
     })) || [];
 
   return (
