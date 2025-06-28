@@ -16,7 +16,7 @@ export interface UserAttributes {
 export interface UserCreationAttributes
   extends Optional<
     UserAttributes,
-    'id' | 'lastLogin' | 'createdAt' | 'updatedAt'
+    'id' | 'lastLogin' | 'createdAt' | 'updatedAt' | 'role'
   > {}
 
 class User
@@ -65,9 +65,9 @@ User.init(
     },
     role: {
       type: DataTypes.ENUM('admin', 'user'),
-      allowNull: false,
-      defaultValue: 'user',
+      allowNull: true,
     },
+    
     lastLogin: {
       type: DataTypes.DATE,
       allowNull: true,

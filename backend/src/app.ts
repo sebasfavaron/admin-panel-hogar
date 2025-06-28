@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import sequelize from '../config/database';
 import { setupAssociations } from '../models/associations';
-import { auth, requireRole } from '../middleware/auth';
+import { auth } from '../middleware/auth';
 import authRoutes from '../routes/authRoutes';
 import collaboratorRoutes from '../routes/collaboratorRoutes';
 import donationRoutes from '../routes/donationRoutes';
@@ -32,19 +32,9 @@ app.get('/health', async (req, res) => {
 });
 
 // Protected routes requiring authentication
-app.use(
-  '/api/collaborators',
-  auth,
-  requireRole(['admin', 'user']),
-  collaboratorRoutes
-);
-app.use('/api/donations', auth, requireRole(['admin', 'user']), donationRoutes);
-app.use(
-  '/api/email-campaigns',
-  auth,
-  requireRole(['admin']),
-  emailCampaignRoutes
-);
+app.use('/api/collaborators', auth, collaboratorRoutes);
+app.use('/api/donations', auth, donationRoutes);
+app.use('/api/email-campaigns', auth, emailCampaignRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

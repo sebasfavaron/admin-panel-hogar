@@ -8,15 +8,15 @@ import {
   getDonationsByCollaborator,
 } from '../controllers/donationController';
 import { validateDonation } from '../middleware/donationValidation';
-import { requireRole } from '../middleware/auth';
+import { auth } from '../middleware/auth';
 
 const router = Router();
 
 router.get('/', getDonations);
 router.get('/:id', getDonation);
 router.get('/collaborator/:collaboratorId', getDonationsByCollaborator);
-router.post('/', requireRole(['admin']), validateDonation, createDonation);
-router.put('/:id', requireRole(['admin']), validateDonation, updateDonation);
-router.delete('/:id', requireRole(['admin']), deleteDonation);
+router.post('/', auth, validateDonation, createDonation);
+router.put('/:id', auth, validateDonation, updateDonation);
+router.delete('/:id', auth, deleteDonation);
 
 export default router;

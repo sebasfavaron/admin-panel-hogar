@@ -4,7 +4,7 @@
   "main": "dist/src/index.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
-    "build": "npm i --production=false && tsc",
+    "build": "tsc",
     "start": "node dist/src/index.js",
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize-cli db:migrate:undo",

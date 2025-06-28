@@ -57,7 +57,7 @@ function App() {
 
                 {/* Protected routes - accessible to both admin and user */}
                 <Route
-                  element={<ProtectedRoute requiredRole={['admin', 'user']} />}
+                  element={<ProtectedRoute />}
                 >
                   <Route path='/' element={<MainLayout />}>
                     <Route
@@ -78,7 +78,7 @@ function App() {
                 </Route>
 
                 {/* Admin-only routes */}
-                <Route element={<ProtectedRoute requiredRole={['admin']} />}>
+                <Route element={<ProtectedRoute />}>
                   <Route path='/' element={<MainLayout />}>
                     <Route path='email-campaigns'>
                       <Route index element={<EmailCampaignsPage />} />
