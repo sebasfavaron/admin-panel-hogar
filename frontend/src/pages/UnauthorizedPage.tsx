@@ -18,21 +18,21 @@ export default function UnauthorizedPage() {
         }}
       >
         <Typography variant='h4' color='error' gutterBottom>
-          Access Denied
+          Acceso Denegado
         </Typography>
         <Typography variant='body1' paragraph align='center'>
-          You don't have permission to access this resource. Please contact your
-          administrator if you believe this is an error.
+          No tienes permiso para acceder a este recurso. Por favor, contacta a
+          tu administrador si crees que esto es un error.
         </Typography>
         <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
           <Button variant='outlined' onClick={() => navigate(-1)}>
-            Go Back
+            Volver
           </Button>
           <Button variant='contained' onClick={() => navigate('/')}>
-            Go to Dashboard
+            Ir al Panel
           </Button>
           <Button variant='contained' color='secondary' onClick={logout}>
-            Logout
+            Cerrar Sesión
           </Button>
         </Box>
       </Paper>

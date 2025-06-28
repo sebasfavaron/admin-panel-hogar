@@ -26,17 +26,17 @@ export default function RegisterPage() {
 
     // Basic form validation
     if (!name || !email || !password || !confirmPassword) {
-      setFormError('Please fill in all fields');
+      setFormError('Por favor, complete todos los campos');
       return;
     }
 
     if (password !== confirmPassword) {
-      setFormError('Passwords do not match');
+      setFormError('Las contraseñas no coinciden');
       return;
     }
 
     if (password.length < 6) {
-      setFormError('Password must be at least 6 characters');
+      setFormError('La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
@@ -68,11 +68,11 @@ export default function RegisterPage() {
           }}
         >
           <Typography component='h1' variant='h5' sx={{ mb: 3 }}>
-            Orphanage Admin Panel
+            Panel de Administración del Hogar
           </Typography>
 
           <Typography component='h2' variant='h6' sx={{ mb: 3 }}>
-            Register
+            Registrarse
           </Typography>
 
           {(error || formError) && (
@@ -91,7 +91,7 @@ export default function RegisterPage() {
               required
               fullWidth
               id='name'
-              label='Full Name'
+              label='Nombre Completo'
               name='name'
               autoComplete='name'
               autoFocus
@@ -104,7 +104,7 @@ export default function RegisterPage() {
               required
               fullWidth
               id='email'
-              label='Email Address'
+              label='Correo Electrónico'
               name='email'
               autoComplete='email'
               value={email}
@@ -116,7 +116,7 @@ export default function RegisterPage() {
               required
               fullWidth
               name='password'
-              label='Password'
+              label='Contraseña'
               type='password'
               id='password'
               autoComplete='new-password'
@@ -129,7 +129,7 @@ export default function RegisterPage() {
               required
               fullWidth
               name='confirmPassword'
-              label='Confirm Password'
+              label='Confirmar Contraseña'
               type='password'
               id='confirmPassword'
               autoComplete='new-password'
@@ -144,13 +144,13 @@ export default function RegisterPage() {
               disabled={isLoading}
               sx={{ mt: 3, mb: 2 }}
             >
-              {isLoading ? <CircularProgress size={24} /> : 'Register'}
+              {isLoading ? <CircularProgress size={24} /> : 'Registrarse'}
             </Button>
             <Box textAlign='center'>
               <Typography variant='body2'>
-                Already have an account?{' '}
+                ¿Ya tienes una cuenta?{' '}
                 <Link to='/login' style={{ textDecoration: 'none' }}>
-                  Login
+                  Iniciar Sesión
                 </Link>
               </Typography>
             </Box>

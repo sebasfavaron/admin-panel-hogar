@@ -26,9 +26,9 @@ import { useAuth } from '../hooks/useAuth';
 const DRAWER_WIDTH = 240;
 
 const menuItems = [
-  { text: 'Collaborators', icon: <People />, path: '/collaborators' },
-  { text: 'Donations', icon: <MonetizationOn />, path: '/donations' },
-  { text: 'Email Campaigns', icon: <Email />, path: '/email-campaigns' },
+  { text: 'Colaboradores', icon: <People />, path: '/collaborators' },
+  { text: 'Donaciones', icon: <MonetizationOn />, path: '/donations' },
+  { text: 'Campañas de Email', icon: <Email />, path: '/email-campaigns' },
 ];
 
 export default function MainLayout() {
@@ -51,14 +51,14 @@ export default function MainLayout() {
       >
         <Toolbar>
           <Typography variant='h6' noWrap component='div' sx={{ flexGrow: 1 }}>
-            Orphanage Admin Panel
+            Panel de Administración del Hogar
           </Typography>
 
           {user && (
             <div>
               <IconButton
                 size='large'
-                aria-label='account of current user'
+                aria-label='cuenta del usuario actual'
                 aria-controls='menu-appbar'
                 aria-haspopup='true'
                 onClick={handleMenu}
@@ -86,16 +86,16 @@ export default function MainLayout() {
               >
                 <MenuItem disabled>
                   <Typography variant='body2' color='textSecondary'>
-                    Signed in as {user.email}
+                    Conectado como {user.email}
                   </Typography>
                 </MenuItem>
                 <MenuItem disabled>
                   <Typography variant='body2' color='textSecondary'>
-                    Role: {user.role}
+                    Rol: {user.role}
                   </Typography>
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={logout}>Logout</MenuItem>
+                <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
               </Menu>
             </div>
           )}

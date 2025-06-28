@@ -23,7 +23,7 @@ export default function LoginPage() {
     setFormError('');
 
     if (!email || !password) {
-      setFormError('Please fill in all fields');
+      setFormError('Por favor, complete todos los campos');
       return;
     }
 
@@ -55,11 +55,11 @@ export default function LoginPage() {
           }}
         >
           <Typography component='h1' variant='h5' sx={{ mb: 3 }}>
-            Orphanage Admin Panel
+            Panel de Administración del Hogar
           </Typography>
 
           <Typography component='h2' variant='h6' sx={{ mb: 3 }}>
-            Login
+            Iniciar Sesión
           </Typography>
 
           {(error || formError) && (
@@ -78,7 +78,7 @@ export default function LoginPage() {
               required
               fullWidth
               id='email'
-              label='Email Address'
+              label='Correo Electrónico'
               name='email'
               autoComplete='email'
               autoFocus
@@ -91,7 +91,7 @@ export default function LoginPage() {
               required
               fullWidth
               name='password'
-              label='Password'
+              label='Contraseña'
               type='password'
               id='password'
               autoComplete='current-password'
@@ -106,13 +106,13 @@ export default function LoginPage() {
               disabled={isLoading}
               sx={{ mt: 3, mb: 2 }}
             >
-              {isLoading ? <CircularProgress size={24} /> : 'Login'}
+              {isLoading ? <CircularProgress size={24} /> : 'Iniciar Sesión'}
             </Button>
             <Box textAlign='center'>
               <Typography variant='body2'>
-                Don't have an account?{' '}
+                ¿No tienes una cuenta?{' '}
                 <Link to='/register' style={{ textDecoration: 'none' }}>
-                  Register
+                  Registrarse
                 </Link>
               </Typography>
             </Box>

@@ -19,6 +19,11 @@ import {
 import { Collaborator } from '../types/models';
 
 const HELP_TYPES = ['financial', 'physical', 'both'] as const;
+const HELP_TYPES_SPANISH = {
+  financial: 'Económica',
+  physical: 'Física',
+  both: 'Ambas',
+};
 
 interface CollaboratorFormProps {
   initialData?: Collaborator;
@@ -87,7 +92,9 @@ export default function CollaboratorForm({
       onSubmit?.();
       navigate('/collaborators');
     } catch {
-      setError('Failed to save collaborator. Please try again.');
+      setError(
+        'Error al guardar el colaborador. Por favor, inténtalo de nuevo.'
+      );
     }
   };
 
@@ -132,7 +139,7 @@ export default function CollaboratorForm({
 
       <TextField
         fullWidth
-        label='Name'
+        label='Nombre'
         name='name'
         value={formData.name}
         onChange={handleTextFieldChange}
@@ -142,7 +149,7 @@ export default function CollaboratorForm({
 
       <TextField
         fullWidth
-        label='Email'
+        label='Correo Electrónico'
         name='email'
         type='email'
         value={formData.email}
@@ -153,7 +160,7 @@ export default function CollaboratorForm({
 
       <TextField
         fullWidth
-        label='Phone'
+        label='Teléfono'
         name='phone'
         value={formData.phone}
         onChange={handleTextFieldChange}
@@ -161,29 +168,29 @@ export default function CollaboratorForm({
       />
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Help Type</InputLabel>
+        <InputLabel>Tipo de Ayuda</InputLabel>
         <Select
           name='help_type'
           value={formData.help_type}
-          label='Help Type'
+          label='Tipo de Ayuda'
           onChange={handleSelectChange}
           required
         >
           {HELP_TYPES.map((type) => (
             <MenuItem key={type} value={type}>
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+              {HELP_TYPES_SPANISH[type]}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
 
       <Typography variant='h6' sx={{ mt: 3, mb: 2 }}>
-        Address
+        Dirección
       </Typography>
 
       <TextField
         fullWidth
-        label='Street'
+        label='Calle'
         name='address.street'
         value={formData.address.street}
         onChange={handleTextFieldChange}
@@ -192,7 +199,7 @@ export default function CollaboratorForm({
 
       <TextField
         fullWidth
-        label='City'
+        label='Ciudad'
         name='address.city'
         value={formData.address.city}
         onChange={handleTextFieldChange}
@@ -201,7 +208,7 @@ export default function CollaboratorForm({
 
       <TextField
         fullWidth
-        label='State'
+        label='Estado/Provincia'
         name='address.state'
         value={formData.address.state}
         onChange={handleTextFieldChange}
@@ -210,7 +217,7 @@ export default function CollaboratorForm({
 
       <TextField
         fullWidth
-        label='Country'
+        label='País'
         name='address.country'
         value={formData.address.country}
         onChange={handleTextFieldChange}
@@ -219,7 +226,7 @@ export default function CollaboratorForm({
 
       <TextField
         fullWidth
-        label='Zip Code'
+        label='Código Postal'
         name='address.zipCode'
         value={formData.address.zipCode}
         onChange={handleTextFieldChange}
@@ -235,10 +242,10 @@ export default function CollaboratorForm({
             createCollaborator.isPending || updateCollaborator.isPending
           }
         >
-          {initialData ? 'Update' : 'Create'} Collaborator
+          {initialData ? 'Actualizar' : 'Crear'} Colaborador
         </Button>
         <Button variant='outlined' onClick={() => navigate('/collaborators')}>
-          Cancel
+          Cancelar
         </Button>
       </Box>
     </Box>

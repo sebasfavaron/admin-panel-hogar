@@ -7,13 +7,24 @@ import {
   deleteCollaborator,
 } from '../controllers/collaboratorController';
 import { validateCollaborator } from '../middleware/collaboratorValidation';
+import { requireRole } from '../middleware/auth';
 
 const router = Router();
 
 router.get('/', getCollaborators);
 router.get('/:id', getCollaborator);
-router.post('/', validateCollaborator, createCollaborator);
-router.put('/:id', validateCollaborator, updateCollaborator);
-router.delete('/:id', deleteCollaborator);
+router.post(
+  '/',
+  requireRole(['admin']),
+  validateCollaborator,
+  createCollaborator
+);
+router.put(
+  '/:id',
+  requireRole(['admin']),
+  validateCollaborator,
+  updateCollaborator
+);
+router.delete('/:id', requireRole(['admin']), deleteCollaborator);
 
 export default router;

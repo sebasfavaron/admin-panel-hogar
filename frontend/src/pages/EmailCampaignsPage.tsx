@@ -31,7 +31,7 @@ export default function EmailCampaignsPage() {
   const deleteEmailCampaign = useDeleteEmailCampaign();
 
   const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this campaign?')) {
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta campaña?')) {
       deleteEmailCampaign.mutate(id);
     }
   };
@@ -39,7 +39,7 @@ export default function EmailCampaignsPage() {
   const columns: GridColDef<EmailCampaignRow>[] = [
     {
       field: 'subject',
-      headerName: 'Subject',
+      headerName: 'Asunto',
       flex: 1,
       renderCell: (params) => (
         <Tooltip title={params.value} placement='top'>
@@ -49,7 +49,7 @@ export default function EmailCampaignsPage() {
     },
     {
       field: 'status',
-      headerName: 'Status',
+      headerName: 'Estado',
       width: 120,
       renderCell: (params) => (
         <Chip
@@ -64,13 +64,13 @@ export default function EmailCampaignsPage() {
     },
     {
       field: 'recipient_count',
-      headerName: 'Recipients',
+      headerName: 'Destinatarios',
       width: 100,
       type: 'number',
     },
     {
       field: 'sent_at',
-      headerName: 'Sent At',
+      headerName: 'Enviado',
       width: 180,
       renderCell: (params) => {
         if (!params.row.sent_at) return '-';
@@ -79,7 +79,7 @@ export default function EmailCampaignsPage() {
     },
     {
       field: 'createdAt',
-      headerName: 'Created',
+      headerName: 'Creado',
       width: 180,
       renderCell: (params) => {
         const date = params.row.createdAt
@@ -91,26 +91,26 @@ export default function EmailCampaignsPage() {
     {
       field: 'actions',
       type: 'actions',
-      headerName: 'Actions',
+      headerName: 'Acciones',
       width: 120,
       getActions: (params) => [
         <GridActionsCellItem
           icon={<EditIcon />}
-          label='Edit'
+          label='Editar'
           onClick={() => navigate(`/email-campaigns/${params.id}`)}
           showInMenu={false}
           disabled={params.row.status === 'sent'}
         />,
         <GridActionsCellItem
           icon={<SendIcon />}
-          label='Send'
+          label='Enviar'
           onClick={() => navigate(`/email-campaigns/${params.id}`)}
           showInMenu={false}
           disabled={params.row.status === 'sent'}
         />,
         <GridActionsCellItem
           icon={<DeleteIcon />}
-          label='Delete'
+          label='Eliminar'
           onClick={() => handleDelete(params.id as string)}
           showInMenu={false}
           disabled={params.row.status === 'sent'}
@@ -121,16 +121,16 @@ export default function EmailCampaignsPage() {
 
   return (
     <Box sx={{ height: 600, width: '100%', p: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
         <Typography variant='h4' component='h1'>
-          Email Campaigns
+          Campañas de Email
         </Typography>
         <Button
           variant='contained'
           color='primary'
           onClick={() => navigate('/email-campaigns/new')}
         >
-          Create Campaign
+          Crear Campaña
         </Button>
       </Box>
 

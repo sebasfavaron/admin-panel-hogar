@@ -17,28 +17,28 @@ interface DonationRow {
 const columns: GridColDef<DonationRow>[] = [
   {
     field: 'amount_display',
-    headerName: 'Amount',
+    headerName: 'Cantidad',
     flex: 1,
   },
-  { field: 'payment_method', headerName: 'Payment Method', flex: 1 },
+  { field: 'payment_method', headerName: 'Método de Pago', flex: 1 },
   {
     field: 'date',
-    headerName: 'Date',
+    headerName: 'Fecha',
     flex: 1,
     type: 'date',
     valueGetter: ({ value }) => value && new Date(value),
   },
   {
     field: 'collaborator',
-    headerName: 'Collaborator',
+    headerName: 'Colaborador',
     flex: 1,
-    renderCell: (params) => params.row.Collaborator?.name ?? 'Unknown',
+    renderCell: (params) => params.row.Collaborator?.name ?? 'Desconocido',
   },
   {
     field: 'collaboratorEmail',
-    headerName: 'Email',
+    headerName: 'Correo',
     flex: 1,
-    renderCell: (params) => params.row.Collaborator?.email ?? 'Unknown',
+    renderCell: (params) => params.row.Collaborator?.email ?? 'Desconocido',
   },
 ];
 
@@ -49,7 +49,9 @@ export default function DonationsPage() {
 
   const handleDelete = () => {
     if (
-      window.confirm('Are you sure you want to delete the selected donations?')
+      window.confirm(
+        '¿Estás seguro de que deseas eliminar las donaciones seleccionadas?'
+      )
     ) {
       selectedRows.forEach((id) => deleteDonation.mutate(id));
     }
@@ -59,7 +61,7 @@ export default function DonationsPage() {
     donations?.map((donation: Donation) => ({
       id: donation.id,
       amount: donation.amount,
-      amount_display: new Intl.NumberFormat('en-US', {
+      amount_display: new Intl.NumberFormat('es-ES', {
         style: 'currency',
         currency: donation.currency,
       }).format(donation.amount),
@@ -71,9 +73,9 @@ export default function DonationsPage() {
 
   return (
     <Box sx={{ height: 600, width: '100%', p: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
         <Typography variant='h4' component='h1'>
-          Donations
+          Donaciones
         </Typography>
         <Box>
           <Button
@@ -82,7 +84,7 @@ export default function DonationsPage() {
             href='/donations/new'
             sx={{ mr: 1 }}
           >
-            Add New
+            Agregar Nueva
           </Button>
           <Button
             variant='contained'
@@ -90,7 +92,7 @@ export default function DonationsPage() {
             onClick={handleDelete}
             disabled={selectedRows.length === 0}
           >
-            Delete Selected
+            Eliminar Seleccionadas
           </Button>
         </Box>
       </Box>

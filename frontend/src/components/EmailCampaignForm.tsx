@@ -64,31 +64,31 @@ function FilterDialog({ open, onClose, onApply }: FilterDialogProps) {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
-      <DialogTitle>Filter Recipients</DialogTitle>
+      <DialogTitle>Filtrar Destinatarios</DialogTitle>
       <DialogContent>
         <FormControl fullWidth sx={{ mt: 2 }}>
-          <InputLabel>Help Type</InputLabel>
+          <InputLabel>Tipo de Ayuda</InputLabel>
           <Select
             value={filters.helpType || ''}
-            label='Help Type'
+            label='Tipo de Ayuda'
             onChange={(e) => handleChange('helpType', e.target.value)}
           >
-            <MenuItem value=''>All</MenuItem>
-            <MenuItem value='financial'>Financial</MenuItem>
-            <MenuItem value='physical'>Physical</MenuItem>
-            <MenuItem value='both'>Both</MenuItem>
+            <MenuItem value=''>Todos</MenuItem>
+            <MenuItem value='financial'>Económica</MenuItem>
+            <MenuItem value='physical'>Física</MenuItem>
+            <MenuItem value='both'>Ambas</MenuItem>
           </Select>
         </FormControl>
 
         {preview && (
           <Box sx={{ mt: 3 }}>
             <Typography variant='subtitle1' gutterBottom>
-              {preview.count} recipient(s) match these filters
+              {preview.count} destinatario(s) coinciden con estos filtros
             </Typography>
             {preview.sample.length > 0 && (
               <>
                 <Typography variant='subtitle2' gutterBottom>
-                  Sample recipients:
+                  Ejemplos de destinatarios:
                 </Typography>
                 <Box sx={{ pl: 2 }}>
                   {preview.sample.map((recipient, index) => (
@@ -107,13 +107,13 @@ function FilterDialog({ open, onClose, onApply }: FilterDialogProps) {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={onClose}>Cancelar</Button>
         <Button
           onClick={() => onApply(filters)}
           variant='contained'
           disabled={preview?.count === 0}
         >
-          Apply Filters
+          Aplicar Filtros
         </Button>
       </DialogActions>
     </Dialog>
@@ -148,12 +148,12 @@ function ConfirmationDialog({
         <DialogContentText>{message}</DialogContentText>
         <Box sx={{ mt: 2 }}>
           <Typography variant='subtitle1' gutterBottom>
-            Recipients: {recipientCount}
+            Destinatarios: {recipientCount}
           </Typography>
           {recipientSample.length > 0 && (
             <>
               <Typography variant='subtitle2' gutterBottom>
-                Sample recipients:
+                Ejemplos de destinatarios:
               </Typography>
               <List dense>
                 {recipientSample.map((recipient, index) => (
@@ -176,7 +176,7 @@ function ConfirmationDialog({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} disabled={loading}>
-          Cancel
+          Cancelar
         </Button>
         <Button
           onClick={onConfirm}
@@ -184,7 +184,7 @@ function ConfirmationDialog({
           color='primary'
           disabled={loading}
         >
-          {loading ? 'Sending...' : 'Confirm'}
+          {loading ? 'Enviando...' : 'Confirmar'}
         </Button>
       </DialogActions>
     </Dialog>
@@ -201,10 +201,10 @@ interface PreviewDialogProps {
 function PreviewDialog({ open, onClose, subject, body }: PreviewDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
-      <DialogTitle>Email Preview</DialogTitle>
+      <DialogTitle>Vista Previa del Email</DialogTitle>
       <DialogContent>
         <Typography variant='subtitle1' gutterBottom>
-          Subject: {subject}
+          Asunto: {subject}
         </Typography>
         <Box
           sx={{
@@ -218,7 +218,7 @@ function PreviewDialog({ open, onClose, subject, body }: PreviewDialogProps) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={onClose}>Cerrar</Button>
       </DialogActions>
     </Dialog>
   );
@@ -276,10 +276,10 @@ export default function EmailCampaignForm({
           id: initialData.id,
           data: formData,
         });
-        setSuccess('Campaign updated successfully');
+        setSuccess('Campaña actualizada con éxito');
       } else {
         await createCampaign.mutateAsync({ ...formData, status: 'draft' });
-        setSuccess('Campaign created successfully');
+        setSuccess('Campaña creada con éxito');
       }
 
       setTimeout(() => {
@@ -287,7 +287,9 @@ export default function EmailCampaignForm({
         navigate('/email-campaigns');
       }, 1500);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save campaign');
+      setError(
+        err instanceof Error ? err.message : 'Error al guardar la campaña'
+      );
     }
   };
 
@@ -301,8 +303,8 @@ export default function EmailCampaignForm({
       setRecipientPreview(preview);
 
       setConfirmDialogConfig({
-        title: 'Confirm Send',
-        message: `Are you sure you want to send this campaign to ${preview.count} recipients?`,
+        title: 'Confirmar Envío',
+        message: `¿Estás seguro de que deseas enviar esta campaña a ${preview.count} destinatarios?`,
         onConfirm: async () => {
           try {
             await sendCampaign.mutateAsync({
@@ -310,13 +312,13 @@ export default function EmailCampaignForm({
               filters: currentFilters,
             });
             setSuccess(
-              'Campaign sending has started. You can check its status in the campaigns list.'
+              'El envío de la campaña ha comenzado. Puedes comprobar su estado en la lista de campañas.'
             );
             setShowConfirmDialog(false);
             setTimeout(() => navigate('/email-campaigns'), 1500);
           } catch (err) {
             setError(
-              err instanceof Error ? err.message : 'Failed to send campaign'
+              err instanceof Error ? err.message : 'Error al enviar la campaña'
             );
           }
         },
@@ -324,7 +326,9 @@ export default function EmailCampaignForm({
       setShowConfirmDialog(true);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Failed to preview recipients'
+        err instanceof Error
+          ? err.message
+          : 'Error al previsualizar los destinatarios'
       );
     }
   };
@@ -363,7 +367,7 @@ export default function EmailCampaignForm({
 
       <TextField
         fullWidth
-        label='Subject'
+        label='Asunto'
         name='subject'
         value={formData.subject}
         onChange={handleChange}
@@ -373,7 +377,7 @@ export default function EmailCampaignForm({
 
       <TextField
         fullWidth
-        label='Body'
+        label='Contenido'
         name='body'
         value={formData.body}
         onChange={handleChange}
@@ -393,11 +397,11 @@ export default function EmailCampaignForm({
           {isLoading ? (
             <CircularProgress size={24} />
           ) : initialData ? (
-            'Update'
+            'Actualizar'
           ) : (
-            'Create'
+            'Crear'
           )}{' '}
-          Campaign
+          Campaña
         </Button>
 
         {initialData?.id && (
@@ -407,14 +411,14 @@ export default function EmailCampaignForm({
               color='secondary'
               onClick={() => setShowFilterDialog(true)}
             >
-              Set Filters
+              Configurar Filtros
             </Button>
             <Button
               variant='outlined'
               color='info'
               onClick={() => setShowPreviewDialog(true)}
             >
-              Preview
+              Vista Previa
             </Button>
             <Button
               variant='contained'
@@ -422,13 +426,13 @@ export default function EmailCampaignForm({
               onClick={handleSendNow}
               disabled={isLoading || initialData.status === 'sent'}
             >
-              {isLoading ? <CircularProgress size={24} /> : 'Send Now'}
+              {isLoading ? <CircularProgress size={24} /> : 'Enviar Ahora'}
             </Button>
           </>
         )}
 
         <Button variant='outlined' onClick={() => navigate('/email-campaigns')}>
-          Cancel
+          Cancelar
         </Button>
       </Box>
 

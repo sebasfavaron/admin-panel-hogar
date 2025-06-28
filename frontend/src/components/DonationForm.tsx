@@ -16,11 +16,11 @@ import { useCreateDonation, useUpdateDonation } from '../hooks/useDonations';
 import { Donation, Collaborator } from '../types/models';
 
 const PAYMENT_METHODS = [
-  'Cash',
-  'Credit Card',
-  'Bank Transfer',
+  'Efectivo',
+  'Tarjeta de Crédito',
+  'Transferencia Bancaria',
   'PayPal',
-  'Other',
+  'Otro',
 ];
 const CURRENCIES = ['USD', 'EUR', 'GBP'];
 
@@ -84,7 +84,7 @@ export default function DonationForm({
       onSubmit?.();
       navigate('/donations');
     } catch {
-      setError('Failed to save donation. Please try again.');
+      setError('Error al guardar la donación. Por favor, inténtalo de nuevo.');
     }
   };
 
@@ -118,7 +118,7 @@ export default function DonationForm({
 
       <TextField
         fullWidth
-        label='Amount'
+        label='Cantidad'
         name='amount'
         type='number'
         value={formData.amount}
@@ -129,11 +129,11 @@ export default function DonationForm({
       />
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Currency</InputLabel>
+        <InputLabel>Moneda</InputLabel>
         <Select
           name='currency'
           value={formData.currency}
-          label='Currency'
+          label='Moneda'
           onChange={handleSelectChange}
           required
         >
@@ -146,11 +146,11 @@ export default function DonationForm({
       </FormControl>
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Payment Method</InputLabel>
+        <InputLabel>Método de Pago</InputLabel>
         <Select
           name='payment_method'
           value={formData.payment_method}
-          label='Payment Method'
+          label='Método de Pago'
           onChange={handleSelectChange}
           required
         >
@@ -163,11 +163,11 @@ export default function DonationForm({
       </FormControl>
 
       <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Collaborator</InputLabel>
+        <InputLabel>Colaborador</InputLabel>
         <Select
           name='CollaboratorId'
           value={formData.CollaboratorId}
-          label='Collaborator'
+          label='Colaborador'
           onChange={handleSelectChange}
           required
         >
@@ -181,7 +181,7 @@ export default function DonationForm({
 
       <TextField
         fullWidth
-        label='Date'
+        label='Fecha'
         name='date'
         type='date'
         value={formData.date}
@@ -197,10 +197,10 @@ export default function DonationForm({
           color='primary'
           disabled={createDonation.isPending || updateDonation.isPending}
         >
-          {initialData ? 'Update' : 'Create'} Donation
+          {initialData ? 'Actualizar' : 'Crear'} Donación
         </Button>
         <Button variant='outlined' onClick={() => navigate('/donations')}>
-          Cancel
+          Cancelar
         </Button>
       </Box>
     </Box>

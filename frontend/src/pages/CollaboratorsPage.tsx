@@ -12,12 +12,12 @@ interface CollaboratorRow extends Omit<Collaborator, 'id'> {
 }
 
 const columns: GridColDef<CollaboratorRow>[] = [
-  { field: 'name', headerName: 'Name', flex: 1 },
-  { field: 'email', headerName: 'Email', flex: 1 },
-  { field: 'phone', headerName: 'Phone', flex: 1 },
+  { field: 'name', headerName: 'Nombre', flex: 1 },
+  { field: 'email', headerName: 'Correo', flex: 1 },
+  { field: 'phone', headerName: 'Teléfono', flex: 1 },
   {
     field: 'help_type',
-    headerName: 'Help Type',
+    headerName: 'Tipo de Ayuda',
     flex: 1,
     renderCell: (params) =>
       params.row.help_type.charAt(0).toUpperCase() +
@@ -25,7 +25,7 @@ const columns: GridColDef<CollaboratorRow>[] = [
   },
   {
     field: 'last_contact',
-    headerName: 'Last Contact',
+    headerName: 'Último Contacto',
     flex: 1,
     renderCell: (params) => {
       if (!params.row.last_contact) return null;
@@ -42,7 +42,7 @@ export default function CollaboratorsPage() {
   const handleDelete = () => {
     if (
       window.confirm(
-        'Are you sure you want to delete the selected collaborators?'
+        '¿Estás seguro de que deseas eliminar los colaboradores seleccionados?'
       )
     ) {
       selectedRows.forEach((id) => deleteCollaborator.mutate(id));
@@ -65,9 +65,9 @@ export default function CollaboratorsPage() {
 
   return (
     <Box sx={{ height: 600, width: '100%', p: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
         <Typography variant='h4' component='h1'>
-          Collaborators
+          Colaboradores
         </Typography>
         <Box>
           <Button
@@ -76,7 +76,7 @@ export default function CollaboratorsPage() {
             href='/collaborators/new'
             sx={{ mr: 1 }}
           >
-            Add New
+            Agregar Nuevo
           </Button>
           <Button
             variant='contained'
@@ -84,7 +84,7 @@ export default function CollaboratorsPage() {
             onClick={handleDelete}
             disabled={selectedRows.length === 0}
           >
-            Delete Selected
+            Eliminar Seleccionados
           </Button>
         </Box>
       </Box>
