@@ -10,7 +10,7 @@ interface DonationRow {
   amount_display: string;
   currency: string;
   payment_method: string;
-  date: string;
+  date: Date;
   Collaborator?: Collaborator;
 }
 
