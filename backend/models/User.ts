@@ -7,7 +7,6 @@ export interface UserAttributes {
   name: string;
   email: string;
   password: string;
-  role: 'admin' | 'user';
   lastLogin?: Date;
   createdAt?: Date;
   updatedAt?: Date;
@@ -16,7 +15,7 @@ export interface UserAttributes {
 export interface UserCreationAttributes
   extends Optional<
     UserAttributes,
-    'id' | 'lastLogin' | 'createdAt' | 'updatedAt' | 'role'
+    'id' | 'lastLogin' | 'createdAt' | 'updatedAt'
   > {}
 
 class User
@@ -27,7 +26,6 @@ class User
   public name!: string;
   public email!: string;
   public password!: string;
-  public role!: 'admin' | 'user';
   public lastLogin!: Date;
 
   // Timestamps
@@ -63,11 +61,6 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    role: {
-      type: DataTypes.ENUM('admin', 'user'),
-      allowNull: true,
-    },
-    
     lastLogin: {
       type: DataTypes.DATE,
       allowNull: true,

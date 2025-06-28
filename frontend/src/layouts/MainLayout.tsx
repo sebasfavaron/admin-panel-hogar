@@ -89,11 +89,6 @@ export default function MainLayout() {
                     Conectado como {user.email}
                   </Typography>
                 </MenuItem>
-                <MenuItem disabled>
-                  <Typography variant='body2' color='textSecondary'>
-                    Rol: {user.role}
-                  </Typography>
-                </MenuItem>
                 <Divider />
                 <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
               </Menu>

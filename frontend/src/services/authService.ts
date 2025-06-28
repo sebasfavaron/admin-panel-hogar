@@ -17,7 +17,6 @@ export interface AuthResponse {
     id: string;
     email: string;
     name: string;
-    role: string;
   };
 }
 
@@ -25,7 +24,6 @@ export interface UserProfile {
   id: string;
   email: string;
   name: string;
-  role: string;
   lastLogin?: string;
   createdAt: string;
   updatedAt: string;

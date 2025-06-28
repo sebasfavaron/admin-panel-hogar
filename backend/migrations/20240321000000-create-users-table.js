@@ -31,11 +31,6 @@ module.exports = {
             type: DataTypes.STRING,
             allowNull: false,
           },
-          role: {
-            type: DataTypes.ENUM('admin', 'user'),
-            allowNull: false,
-            defaultValue: 'user',
-          },
           lastLogin: {
             type: DataTypes.DATE,
           },
@@ -51,7 +46,6 @@ module.exports = {
 
         // Add indexes for better performance
         await queryInterface.addIndex('Users', ['email']);
-        await queryInterface.addIndex('Users', ['role']);
       }
     } catch (error) {
       console.error('Migration failed:', error);
