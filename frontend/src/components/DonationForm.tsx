@@ -11,6 +11,7 @@ import {
   Alert,
   SelectChangeEvent,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useCollaborators } from '../hooks/useCollaborators';
 import { useCreateDonation, useUpdateDonation } from '../hooks/useDonations';
 import { Donation, Collaborator } from '../types/models';
@@ -88,14 +89,6 @@ export default function DonationForm({
     }
   };
 
-  const handleTextFieldChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleSelectChange = (e: SelectChangeEvent) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -122,9 +115,48 @@ export default function DonationForm({
         name='amount'
         type='number'
         value={formData.amount}
-        onChange={handleTextFieldChange}
+        onChange={(e) => {
+          const value = e.target.value;
+          // Allow empty string or valid numeric format (optional negative sign, digits, optional decimal and digits)
+          if (value === '' || /^-?\d*\.?\d*$/.test(value)) {
+            setFormData((prev) => ({ ...prev, amount: value }));
+          }
+        }}
+        onKeyDown={(event) => {
+          const { key, ctrlKey, metaKey } = event;
+          const currentAmount = formData.amount;
+
+          // Allow control keys (e.g., Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X)
+          if (ctrlKey || metaKey) {
+            return;
+          }
+
+          // Allow backspace, delete, tab, and arrow keys
+          if (
+            ['Backspace', 'Delete', 'Tab', 'ArrowLeft', 'ArrowRight'].includes(
+              key
+            )
+          ) {
+            return;
+          }
+
+          // Allow digits
+          if (/[0-9]/.test(key)) {
+            return;
+          }
+
+          // Allow a single decimal point
+          if (key === '.') {
+            if (currentAmount.includes('.')) {
+              event.preventDefault(); // Prevent multiple decimal points
+            }
+            return;
+          }
+
+          // Prevent all other keys
+          event.preventDefault();
+        }}
         required
-        inputProps={{ min: 0, step: 0.01 }}
         sx={{ mb: 2 }}
       />
 
@@ -179,15 +211,14 @@ export default function DonationForm({
         </Select>
       </FormControl>
 
-      <TextField
-        fullWidth
+      <DatePicker
         label='Fecha'
-        name='date'
-        type='date'
         value={formData.date}
-        onChange={handleTextFieldChange}
-        required
-        sx={{ mb: 2 }}
+        onChange={(newValue) =>
+          setFormData((prev) => ({ ...prev, date: newValue || new Date() }))
+        }
+        format='dd/MM/yyyy'
+        sx={{ mb: 2, width: '100%' }}
       />
 
       <Box sx={{ mt: 3, display: 'flex', gap: 2 }}>
