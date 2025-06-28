@@ -67,13 +67,21 @@ export default function DonationsPage() {
       }).format(donation.amount),
       currency: donation.currency,
       payment_method: donation.payment_method,
-      date: donation.date.toISOString().split('T')[0],
+      date: new Date(donation.date).toISOString().split('T')[0],
       collaborator: donation.collaborator,
     })) || [];
 
   return (
     <Box sx={{ height: 600, width: '100%', p: 2 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+          gap: 2,
+        }}
+      >
         <Typography variant='h4' component='h1'>
           Donaciones
         </Typography>

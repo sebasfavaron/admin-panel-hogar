@@ -63,9 +63,8 @@ module.exports = {
     const sentCampaign = campaigns.find((c) => c.status === 'sent');
     if (sentCampaign) {
       const recipients = collaborators.slice(0, 3).map((collaborator) => ({
-        id: uuidv4(),
         EmailCampaignId: sentCampaign.id,
-        CollaboratorId: collaborator.id,
+        collaboratorId: collaborator.id,
         createdAt: new Date(),
         updatedAt: new Date(),
       }));

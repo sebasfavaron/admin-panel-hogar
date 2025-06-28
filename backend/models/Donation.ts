@@ -8,7 +8,7 @@ export interface DonationAttributes {
   currency: string;
   date: Date;
   payment_method: string;
-  CollaboratorId: string;
+  collaboratorId: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -27,7 +27,7 @@ class Donation
   public currency!: string;
   public date!: Date;
   public payment_method!: string;
-  public CollaboratorId!: string;
+  public collaboratorId!: string;
 
   // Timestamps
   public readonly createdAt!: Date;
@@ -61,7 +61,7 @@ Donation.init(
     payment_method: {
       type: DataTypes.STRING,
     },
-    CollaboratorId: {
+    collaboratorId: {
       type: DataTypes.UUID,
       references: {
         model: 'Collaborators',

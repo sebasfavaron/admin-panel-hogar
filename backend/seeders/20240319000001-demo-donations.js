@@ -68,7 +68,7 @@ module.exports = {
           currency: donation.currency,
           date: donation.date,
           payment_method: donation.payment_method,
-          CollaboratorId: collaborator.id, // Updated to match Sequelize's convention
+          collaboratorId: collaborator.id, // Updated to match Sequelize's convention
           createdAt: new Date(),
           updatedAt: new Date(),
         };

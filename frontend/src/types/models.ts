@@ -26,7 +26,7 @@ export interface Donation {
   currency: string;
   date: Date;
   payment_method: string;
-  CollaboratorId: string;
+  collaboratorId: string;
   collaborator?: Collaborator;
   createdAt?: Date;
   updatedAt?: Date;

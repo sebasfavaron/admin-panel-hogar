@@ -5,13 +5,13 @@ import EmailCampaign from './EmailCampaign';
 export function setupAssociations(): void {
   // Collaborator has many Donations
   Collaborator.hasMany(Donation, {
-    foreignKey: 'CollaboratorId',
+    foreignKey: 'collaboratorId',
     as: 'donations',
   });
 
   // Donation belongs to a Collaborator
   Donation.belongsTo(Collaborator, {
-    foreignKey: 'CollaboratorId',
+    foreignKey: 'collaboratorId',
     as: 'collaborator',
   });
 
@@ -25,6 +25,6 @@ export function setupAssociations(): void {
   Collaborator.belongsToMany(EmailCampaign, {
     through: 'CampaignRecipients',
     as: 'campaigns',
-    foreignKey: 'CollaboratorId',
+    foreignKey: 'collaboratorId',
   });
 }

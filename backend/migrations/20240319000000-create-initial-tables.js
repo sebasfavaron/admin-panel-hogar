@@ -109,7 +109,7 @@ module.exports = {
           type: DataTypes.STRING,
           allowNull: false,
         },
-        CollaboratorId: {
+        collaboratorId: {
           type: DataTypes.UUID,
           references: {
             model: 'Collaborators',
@@ -137,7 +137,7 @@ module.exports = {
           },
           primaryKey: true,
         },
-        CollaboratorId: {
+        collaboratorId: {
           type: DataTypes.UUID,
           references: {
             model: 'Collaborators',
@@ -158,11 +158,11 @@ module.exports = {
       // Add indexes after all tables are created
       await queryInterface.addIndex('Collaborators', ['email']);
       await queryInterface.addIndex('Collaborators', ['help_type']);
-      await queryInterface.addIndex('Donations', ['CollaboratorId']);
+      await queryInterface.addIndex('Donations', ['collaboratorId']);
       await queryInterface.addIndex('EmailCampaigns', ['status']);
       await queryInterface.addIndex('EmailCampaigns', ['sent_at']);
       await queryInterface.addIndex('CampaignRecipients', ['EmailCampaignId']);
-      await queryInterface.addIndex('CampaignRecipients', ['CollaboratorId']);
+      await queryInterface.addIndex('CampaignRecipients', ['collaboratorId']);
 
       console.log('All tables and indexes created successfully');
     } catch (error) {

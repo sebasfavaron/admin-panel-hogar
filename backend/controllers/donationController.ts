@@ -11,6 +11,7 @@ export const getDonations = async (
       include: [
         {
           model: Collaborator,
+          as: 'collaborator',
           attributes: ['id', 'name', 'email'],
         },
       ],
@@ -32,6 +33,7 @@ export const getDonation = async (
       include: [
         {
           model: Collaborator,
+          as: 'collaborator',
           attributes: ['id', 'name', 'email'],
         },
       ],
@@ -50,17 +52,19 @@ export const createDonation = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  console.log('Received donation creation request with body:', req.body);
   try {
     const donationData = {
       ...req.body,
       date: new Date(req.body.date), // Ensure date is properly converted
-      CollaboratorId: req.body.collaboratorId, // Map to correct field name
+      collaboratorId: req.body.collaboratorId, // Map to correct field name
     };
     const donation = await Donation.create(donationData);
     const donationWithCollaborator = await Donation.findByPk(donation.id, {
       include: [
         {
           model: Collaborator,
+          as: 'collaborator',
           attributes: ['id', 'name', 'email'],
         },
       ],
@@ -84,14 +88,15 @@ export const updateDonation = async (
     }
     const updateData = {
       ...req.body,
-      date: new Date(req.body.date), // Ensure date is properly converted
-      CollaboratorId: req.body.collaboratorId, // Map to correct field name
+      date: new Date(req.body.date),
+      collaboratorId: req.body.collaboratorId, // Map to correct field name
     };
     await donation.update(updateData);
     const updatedDonation = await Donation.findByPk(donation.id, {
       include: [
         {
           model: Collaborator,
+          as: 'collaborator',
           attributes: ['id', 'name', 'email'],
         },
       ],
@@ -126,10 +131,11 @@ export const getDonationsByCollaborator = async (
 ): Promise<void> => {
   try {
     const donations = await Donation.findAll({
-      where: { CollaboratorId: req.params.collaboratorId },
+      where: { collaboratorId: req.params.collaboratorId },
       include: [
         {
           model: Collaborator,
+          as: 'collaborator',
           attributes: ['id', 'name', 'email'],
         },
       ],

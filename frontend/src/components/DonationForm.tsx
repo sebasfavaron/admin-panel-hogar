@@ -44,7 +44,7 @@ export default function DonationForm({
     amount: '',
     currency: 'USD',
     payment_method: '',
-    CollaboratorId: '',
+    collaboratorId: '',
     date: new Date(),
   });
 
@@ -54,7 +54,7 @@ export default function DonationForm({
         amount: initialData.amount.toString(),
         currency: initialData.currency,
         payment_method: initialData.payment_method,
-        CollaboratorId: initialData.CollaboratorId,
+        collaboratorId: initialData.collaboratorId,
         date: initialData.date,
       });
     }
@@ -69,9 +69,10 @@ export default function DonationForm({
         amount: parseFloat(formData.amount),
         currency: formData.currency,
         payment_method: formData.payment_method,
-        CollaboratorId: formData.CollaboratorId,
+        collaboratorId: formData.collaboratorId,
         date: formData.date,
       };
+      console.log('Sending donation data:', donationData);
 
       if (initialData?.id) {
         await updateDonation.mutateAsync({
@@ -197,8 +198,8 @@ export default function DonationForm({
       <FormControl fullWidth sx={{ mb: 2 }}>
         <InputLabel>Colaborador</InputLabel>
         <Select
-          name='CollaboratorId'
-          value={formData.CollaboratorId}
+          name='collaboratorId'
+          value={formData.collaboratorId}
           label='Colaborador'
           onChange={handleSelectChange}
           required
